@@ -1,12 +1,10 @@
+
 package com.example.sodrock.firebase_db_test;
 
-import android.content.Context;
-import android.nfc.Tag;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -17,9 +15,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+/**
+ * @Project : Firebase_DB_Test
+ * @Author : ChanHyeok Jeong
+ * @Date :  2017-01-26.
+ */
 
 public class MainActivity extends AppCompatActivity {
     private ListView m_ListView;//콜밴 목록을 띄울 리스트뷰
@@ -37,18 +40,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //뷰 초기화
         initView();
 
+        //db의 root/Callvan의 child 이벤트 리스너
         myDR.addChildEventListener(new ChildEventListener() {
                                        @Override
                                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                            String callvanName = dataSnapshot.getValue(String.class);
-                                           Log.d("","콜밴 데이터 다운로드 완료 "+ callvanName +" : "+ dataSnapshot.getKey());
+                                           //Log.d("테스트","콜밴 데이터 다운로드 완료 "+ callvanName +" : "+ dataSnapshot.getKey());
+
                                            //arrayList에 각각 이름과 키값을 차곡차곡 넣어줌
                                            callvanNames.add(callvanName);
                                            callvanKeys.add(dataSnapshot.getKey());
 
-                                           refreshListView();
+                                           m_Adapter.notifyDataSetChanged();
                                        }
 
                                        @Override
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
                                        @Override
                                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-                                           Log.d("","지워진 데이터의 키값 " + dataSnapshot.getKey());
+                                           //Log.d("test","지워진 데이터의 키값 " + dataSnapshot.getKey());
                                        }
 
                                        @Override
@@ -71,44 +77,48 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    /*
+        뷰 초기화
+     */
     public void initView(){
-        et = (EditText) findViewById(R.id.et1);
-        refreshListView();
-    }
-
-    public void refreshListView() {
-
+        et = (EditText) findViewById(R.id.dataInputET);
 
         m_Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, callvanNames);
-        m_ListView = (ListView) findViewById(R.id.list1);
+        m_ListView = (ListView) findViewById(R.id.dataList);
         m_ListView.setAdapter(m_Adapter);
         m_ListView.setOnItemClickListener(onClickListItem);
-
     }
 
-    public void onClick(View view) {
-        if (view.getId() == R.id.bt1) {//전송 버튼
+    /*
+        전송 버튼 onClick 리스너
+     */
+    public void onSendBtnClick(View view) {
+        if (view.getId() == R.id.sendBtn) {//전송 버튼
             myDR.push().setValue(et.getText().toString());
         }
     }
 
-/*
-리스트뷰 이벤트 리스너
- */
+    /*
+        리스트뷰 아이템 이벤트 리스너
+     */
     private AdapterView.OnItemClickListener onClickListItem = new AdapterView.OnItemClickListener() {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            System.out.println("텍스트 : " + callvanNames.get(position));
-            System.out.println("포지션 : " + position);
+            //Log.d("test","전송 데이터 : " + callvanNames.get(position));
+            //Log.d("test","데이터 포지션 : " + position);
 
+            //클릭된 아이템의 DB key값을 로드
             String callvanKey=callvanKeys.get(position);
 
+            //arrayList에서 제거
             callvanKeys.remove(position);
             callvanNames.remove(position);
+
+            //DB에서 데이터 삭제 -> onChildRemoved()메서드 호출
             myDR.child(callvanKey).removeValue();
 
-            refreshListView();
+            m_Adapter.notifyDataSetChanged();
         }
     };
 }

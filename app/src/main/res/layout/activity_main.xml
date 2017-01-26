@@ -12,22 +12,22 @@ android:paddingTop="@dimen/activity_vertical_margin"
 tools:context="com.example.sodrock.firebase_db_test.MainActivity">
 
 <ListView
-    android:id="@+id/list1"
+    android:id="@+id/dataList"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="80"></ListView>
 <EditText
-    android:id="@+id/et1"
-    android:layout_below="@id/list1"
+    android:id="@+id/dataInputET"
+    android:layout_below="@id/dataList"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="10"/>
 <Button
-    android:id="@+id/bt1"
-    android:layout_below="@id/et1"
+    android:id="@+id/sendBtn"
+    android:layout_below="@id/dataInputET"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="10"
-    android:onClick="onClick"
+    android:onClick="onSendBtnClick"
     android:text="전송"/>
 </LinearLayout>
