@@ -1,6 +1,7 @@
 
 package com.example.sodrock.firebase_db_test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,7 +22,8 @@ import java.util.ArrayList;
 /**
  * @Project : Firebase_DB_Test
  * @Author : ChanHyeok Jeong
- * @Date :  2017-01-26.
+ * @Date :  2017-01-26
+ * @Usage : main - 데이터 전송,삭제 및 표시
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> callvanKeys= new ArrayList<String>();;//콜밴의 각 키값을 저장할 arraylist
     private EditText et;//전송할 데이터 입력 창
 
-    //응 파베디비쓸거야~
+    //파이어 베이스 실시간 데이터베이스 사용
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myDR = database.getReference("Callvan"); //myDR이 Callvan 테이블을 참조
 
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //splash 화면
+        startActivity(new Intent(this,Splash.class));
 
         //뷰 초기화
         initView();
